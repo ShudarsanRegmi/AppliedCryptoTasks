@@ -13,6 +13,13 @@
       "email": "shudarsanregmi555@gmail.com",
       "passwordHash": "cea93559b4f19d5ab63de9b71ddc7a0e:4143dd2ca5708cfdbdeb27c3419c1e6ae3409fa2acaa78b1ad776bc98fb0d3ce89667ba5ef6837fb399b7762aba5653e7349e33fcf179eeda916052b40b75298",
       "createdAt": "2025-12-07T15:11:57.976Z"
+    },
+    {
+      "id": "user-e74ae22a-39b0-4c07-bfa6-eeb2588c111d",
+      "username": "user2",
+      "email": "user2@user2.com",
+      "passwordHash": "280d003fa86b50d79c7d167690a68a5f:294ebf89b6c225ec3480f683b44c377ce00f5f1c57c040d65a2d9c535e595517a9309bb36f3f7acc09ae66e98f27b98734d9474eb3ac1c889ca0452800f24104",
+      "createdAt": "2025-12-07T15:42:41.235Z"
     }
   ]
 }

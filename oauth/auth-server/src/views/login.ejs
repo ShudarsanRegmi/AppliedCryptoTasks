@@ -122,14 +122,35 @@
       <p>Sign in to continue</p>
     </div>
     
+    <% if (!isDirectLogin && client) { %>
     <div class="client-info">
       <p><strong><%= client.clientName %></strong> wants to access your account</p>
     </div>
+    <% } %>
     
     <% if (error) { %>
       <div class="error"><%= error %></div>
     <% } %>
     
+    <% if (isDirectLogin) { %>
+    <form method="POST" action="/login">
+      <% if (typeof redirect !== 'undefined' && redirect) { %>
+        <input type="hidden" name="redirect" value="<%= redirect %>">
+      <% } %>
+      
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autocomplete="username">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+      
+      <button type="submit">Sign In</button>
+    </form>
+    <% } else { %>
     <form method="POST" action="/authorize/login">
       <input type="hidden" name="client_id" value="<%= client.clientId %>">
       <input type="hidden" name="redirect_uri" value="<%= redirect_uri %>">
@@ -154,11 +175,16 @@
       
       <button type="submit">Sign In</button>
     </form>
+    <% } %>
     
     <div class="test-credentials">
       <strong>🧪 Test Credentials:</strong>
       Username: <code>testuser</code><br>
       Password: <code>password123</code>
+    </div>
+    
+    <div class="links" style="margin-top: 20px; text-align: center; font-size: 14px; color: #666;">
+      Don't have an account? <a href="/register<%= (typeof redirect !== 'undefined' && redirect) ? '?redirect=' + encodeURIComponent(redirect) : '' %>" style="color: #667eea; text-decoration: none; font-weight: 500;">Create Account</a>
     </div>
   </div>
 </body>

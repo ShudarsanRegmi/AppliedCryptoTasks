@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "username": "testuser",
+      "email": "test@example.com",
+      "passwordHash": "27e692b52dc60e36d52e4aecbe5703a5:d8d04bac80a4ef516ac93cbf3ec9c16418c3316dfaf6bf80d87ad7cb9e0cbe005889357d40eeb19eafc156c8b27d02d4bd1cba8c3a7f47934449ae918b51302b",
+      "createdAt": "2025-12-07T15:00:23.692Z"
+    },
+    {
+      "id": "user-832e3f8f-665c-4139-ac61-3f5319bf1c7f",
+      "username": "shud",
+      "email": "shudarsanregmi555@gmail.com",
+      "passwordHash": "cea93559b4f19d5ab63de9b71ddc7a0e:4143dd2ca5708cfdbdeb27c3419c1e6ae3409fa2acaa78b1ad776bc98fb0d3ce89667ba5ef6837fb399b7762aba5653e7349e33fcf179eeda916052b40b75298",
+      "createdAt": "2025-12-07T15:11:57.976Z"
+    }
+  ]
+}

@@ -7,7 +7,10 @@ import {
 } from '../models/client';
 import { 
   authenticateUser, 
-  findUserById 
+  findUserById,
+  createUser,
+  usernameExists,
+  emailExists
 } from '../models/user';
 import { 
   generateAuthorizationCode, 
@@ -19,6 +22,199 @@ import {
   introspectToken,
   verifyCodeChallenge
 } from '../services/tokenService';
+
+// ==========================================
+// Direct Login Page (not OAuth)
+// GET /login
+// ==========================================
+export function loginPage(req: Request, res: Response): void {
+  const session = req.session as any;
+  const redirect = req.query.redirect as string || null;
+  
+  if (session.userId) {
+    // If already logged in and there's a redirect, issue a token and redirect
+    if (redirect) {
+      const user = findUserById(session.userId);
+      if (user) {
+        const { accessToken } = generateTokenPair(
+          user.id, 
+          'direct-login', 
+          ['notes:read', 'notes:write', 'profile:read']
+        );
+        const redirectUrl = new URL(redirect);
+        redirectUrl.searchParams.set('token', accessToken);
+        res.redirect(redirectUrl.toString());
+        return;
+      }
+    }
+    res.redirect('/dashboard');
+    return;
+  }
+  
+  res.render('login', {
+    client: null,
+    scopes: [],
+    redirect_uri: null,
+    state: null,
+    code_challenge: null,
+    code_challenge_method: null,
+    error: null,
+    isDirectLogin: true,
+    redirect
+  });
+}
+
+// ==========================================
+// Direct Login Handler (not OAuth)
+// POST /login
+// ==========================================
+export function loginHandler(req: Request, res: Response): void {
+  const { username, password, redirect } = req.body;
+  
+  const user = authenticateUser(username, password);
+  if (!user) {
+    res.render('login', {
+      client: null,
+      scopes: [],
+      redirect_uri: null,
+      state: null,
+      code_challenge: null,
+      code_challenge_method: null,
+      error: 'Invalid username or password',
+      isDirectLogin: true,
+      redirect
+    });
+    return;
+  }
+  
+  const session = req.session as any;
+  session.userId = user.id;
+  
+  // If redirect is specified, issue a token and redirect back with it
+  if (redirect) {
+    const { accessToken } = generateTokenPair(
+      user.id, 
+      'direct-login', 
+      ['notes:read', 'notes:write', 'profile:read']
+    );
+    const redirectUrl = new URL(redirect);
+    redirectUrl.searchParams.set('token', accessToken);
+    res.redirect(redirectUrl.toString());
+    return;
+  }
+  
+  res.redirect('/dashboard');
+}
+
+// ==========================================
+// Registration Page
+// GET /register
+// ==========================================
+export function registerPage(req: Request, res: Response): void {
+  const session = req.session as any;
+  if (session.userId) {
+    res.redirect('/dashboard');
+    return;
+  }
+  
+  res.render('register', {
+    error: null,
+    success: null,
+    redirect: req.query.redirect || null
+  });
+}
+
+// ==========================================
+// Registration Handler
+// POST /register
+// ==========================================
+export function registerHandler(req: Request, res: Response): void {
+  const { username, email, password, confirmPassword, redirect } = req.body;
+  
+  // Validation
+  if (!username || !email || !password) {
+    res.render('register', {
+      error: 'All fields are required',
+      success: null,
+      redirect
+    });
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    res.render('register', {
+      error: 'Passwords do not match',
+      success: null,
+      redirect
+    });
+    return;
+  }
+  
+  if (password.length < 6) {
+    res.render('register', {
+      error: 'Password must be at least 6 characters',
+      success: null,
+      redirect
+    });
+    return;
+  }
+  
+  if (usernameExists(username)) {
+    res.render('register', {
+      error: 'Username is already taken',
+      success: null,
+      redirect
+    });
+    return;
+  }
+  
+  if (emailExists(email)) {
+    res.render('register', {
+      error: 'Email is already registered',
+      success: null,
+      redirect
+    });
+    return;
+  }
+  
+  // Create user
+  const user = createUser(username, email, password);
+  if (!user) {
+    res.render('register', {
+      error: 'Failed to create account. Please try again.',
+      success: null,
+      redirect
+    });
+    return;
+  }
+  
+  // Auto-login after registration
+  const session = req.session as any;
+  session.userId = user.id;
+  
+  res.redirect(redirect || '/dashboard');
+}
+
+// ==========================================
+// Dashboard Page
+// GET /dashboard
+// ==========================================
+export function dashboardPage(req: Request, res: Response): void {
+  const session = req.session as any;
+  if (!session.userId) {
+    res.redirect('/login');
+    return;
+  }
+  
+  const user = findUserById(session.userId);
+  if (!user) {
+    session.destroy(() => {});
+    res.redirect('/login');
+    return;
+  }
+  
+  res.render('dashboard', { user });
+}
 
 // ==========================================
 // Authorization Endpoint
@@ -450,15 +646,24 @@ export function userinfoEndpoint(req: Request, res: Response): void {
 
 // ==========================================
 // Logout Endpoint
-// POST /logout
+// GET/POST /logout
 // ==========================================
 export function logoutEndpoint(req: Request, res: Response): void {
   const session = req.session as any;
   session.destroy((err: any) => {
     if (err) {
-      res.status(500).json({ error: 'Failed to logout' });
+      if (req.method === 'GET') {
+        res.redirect('/login');
+      } else {
+        res.status(500).json({ error: 'Failed to logout' });
+      }
       return;
     }
-    res.json({ message: 'Logged out successfully' });
+    
+    if (req.method === 'GET') {
+      res.redirect('/login');
+    } else {
+      res.json({ message: 'Logged out successfully' });
+    }
   });
 }

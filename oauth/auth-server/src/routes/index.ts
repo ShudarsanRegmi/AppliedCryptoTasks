@@ -1,5 +1,10 @@
 import { Router } from 'express';
 import {
+  loginPage,
+  loginHandler,
+  registerPage,
+  registerHandler,
+  dashboardPage,
   authorizeGet,
   authorizeLogin,
   authorizeConsent,
@@ -12,6 +17,18 @@ import { validateAccessToken } from '../middleware/auth';
 
 const router = Router();
 
+// ==========================================
+// Direct Auth Routes (not OAuth)
+// ==========================================
+router.get('/login', loginPage);
+router.post('/login', loginHandler);
+router.get('/register', registerPage);
+router.post('/register', registerHandler);
+router.get('/dashboard', dashboardPage);
+
+// ==========================================
+// OAuth 2.0 Routes
+// ==========================================
 // Authorization endpoint
 router.get('/authorize', authorizeGet);
 router.post('/authorize/login', authorizeLogin);
@@ -27,6 +44,7 @@ router.post('/introspect', introspectEndpoint);
 router.get('/userinfo', validateAccessToken, userinfoEndpoint);
 
 // Logout
+router.get('/logout', logoutEndpoint);
 router.post('/logout', logoutEndpoint);
 
 // Health check

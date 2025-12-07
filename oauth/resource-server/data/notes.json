@@ -1,0 +1,52 @@
+{
+  "notes": [
+    {
+      "id": "note-1",
+      "userId": "user-1",
+      "title": "Welcome to Notes",
+      "content": "This is your first note. You can use this app to store all your important thoughts and ideas. Feel free to create, edit, and organize your notes however you like!",
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "note-2",
+      "userId": "user-1",
+      "title": "Meeting Notes",
+      "content": "Discussed project timeline with the team. Key points: 1) MVP deadline is end of month, 2) Need to finalize API design, 3) Schedule weekly sync meetings. Action items assigned to each team member.",
+      "createdAt": "2024-02-10T14:30:00.000Z",
+      "updatedAt": "2024-02-10T14:30:00.000Z"
+    },
+    {
+      "id": "note-3",
+      "userId": "user-1",
+      "title": "Shopping List",
+      "content": "Groceries: milk, bread, eggs, cheese, tomatoes, onions, chicken, rice, pasta, olive oil. Don't forget to check for sales!",
+      "createdAt": "2024-03-05T09:15:00.000Z",
+      "updatedAt": "2024-03-05T09:15:00.000Z"
+    },
+    {
+      "id": "note-4",
+      "userId": "user-1",
+      "title": "OAuth 2.0 Learning Notes",
+      "content": "OAuth 2.0 is an authorization framework. Key concepts: Authorization Code Grant, Access Tokens, Refresh Tokens, Scopes. Remember: OAuth is for authorization, not authentication. OpenID Connect adds authentication layer on top.",
+      "createdAt": "2024-04-01T16:45:00.000Z",
+      "updatedAt": "2024-04-01T16:45:00.000Z"
+    },
+    {
+      "id": "note-42ed5a09-4ca6-4347-9431-a356ded07094",
+      "userId": "user-832e3f8f-665c-4139-ac61-3f5319bf1c7f",
+      "title": "Note2",
+      "content": "This is note2",
+      "createdAt": "2025-12-07T15:12:35.565Z",
+      "updatedAt": "2025-12-07T15:12:35.565Z"
+    },
+    {
+      "id": "note-12977d6a-9298-4ec2-9a33-87dc399bc0f5",
+      "userId": "user-832e3f8f-665c-4139-ac61-3f5319bf1c7f",
+      "title": "Note3",
+      "content": "This is my note3.  I've now edited note3",
+      "createdAt": "2025-12-07T15:12:50.005Z",
+      "updatedAt": "2025-12-07T15:13:08.027Z"
+    }
+  ]
+}

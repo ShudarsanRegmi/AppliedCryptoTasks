@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authorize - OAuth Server</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: #666;
+      font-size: 14px;
+    }
+    .user-info {
+      background: #f0fdf4;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: #22c55e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    .user-details {
+      flex: 1;
+    }
+    .user-details .name {
+      font-weight: 600;
+      color: #333;
+    }
+    .user-details .email {
+      font-size: 13px;
+      color: #666;
+    }
+    .client-section {
+      text-align: center;
+      margin-bottom: 24px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+    .client-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 28px;
+    }
+    .client-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    .client-wants {
+      color: #666;
+      font-size: 14px;
+    }
+    .scopes-section {
+      margin-bottom: 24px;
+    }
+    .scopes-section h3 {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .scope-list {
+      list-style: none;
+    }
+    .scope-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .scope-icon {
+      width: 36px;
+      height: 36px;
+      background: #e0e7ff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .scope-details {
+      flex: 1;
+    }
+    .scope-name {
+      font-weight: 500;
+      color: #333;
+      font-size: 14px;
+    }
+    .scope-desc {
+      font-size: 12px;
+      color: #666;
+    }
+    .buttons {
+      display: flex;
+      gap: 12px;
+    }
+    button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-deny {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    .btn-deny:hover {
+      background: #e5e7eb;
+    }
+    .btn-allow {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: white;
+    }
+    .btn-allow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+    }
+    .warning {
+      margin-top: 20px;
+      padding: 12px;
+      background: #fef3c7;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #92400e;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔐 Authorization Request</h1>
+      <p>An application is requesting access to your account</p>
+    </div>
+    
+    <div class="user-info">
+      <div class="user-avatar"><%= user.username.charAt(0).toUpperCase() %></div>
+      <div class="user-details">
+        <div class="name"><%= user.username %></div>
+        <div class="email"><%= user.email %></div>
+      </div>
+    </div>
+    
+    <div class="client-section">
+      <div class="client-icon">📊</div>
+      <div class="client-name"><%= client.clientName %></div>
+      <div class="client-wants">wants to access your account</div>
+    </div>
+    
+    <div class="scopes-section">
+      <h3>This will allow the app to:</h3>
+      <ul class="scope-list">
+        <% scopes.forEach(function(scope) { %>
+          <li class="scope-item">
+            <% if (scope === 'notes:read') { %>
+              <div class="scope-icon">📖</div>
+              <div class="scope-details">
+                <div class="scope-name">Read your notes</div>
+                <div class="scope-desc">View all your notes and their contents</div>
+              </div>
+            <% } else if (scope === 'notes:write') { %>
+              <div class="scope-icon">✏️</div>
+              <div class="scope-details">
+                <div class="scope-name">Modify your notes</div>
+                <div class="scope-desc">Create, edit, and delete your notes</div>
+              </div>
+            <% } else if (scope === 'profile:read') { %>
+              <div class="scope-icon">👤</div>
+              <div class="scope-details">
+                <div class="scope-name">View your profile</div>
+                <div class="scope-desc">Access your username and email</div>
+              </div>
+            <% } else { %>
+              <div class="scope-icon">🔑</div>
+              <div class="scope-details">
+                <div class="scope-name"><%= scope %></div>
+                <div class="scope-desc">Custom permission</div>
+              </div>
+            <% } %>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+    
+    <form method="POST" action="/authorize/consent">
+      <input type="hidden" name="client_id" value="<%= client.clientId %>">
+      <input type="hidden" name="redirect_uri" value="<%= redirect_uri %>">
+      <input type="hidden" name="scope" value="<%= scopes.join(' ') %>">
+      <% if (state) { %>
+        <input type="hidden" name="state" value="<%= state %>">
+      <% } %>
+      <% if (code_challenge) { %>
+        <input type="hidden" name="code_challenge" value="<%= code_challenge %>">
+        <input type="hidden" name="code_challenge_method" value="<%= code_challenge_method %>">
+      <% } %>
+      
+      <div class="buttons">
+        <button type="submit" name="consent" value="deny" class="btn-deny">Deny</button>
+        <button type="submit" name="consent" value="allow" class="btn-allow">Allow</button>
+      </div>
+    </form>
+    
+    <div class="warning">
+      ⚠️ Make sure you trust this application before granting access
+    </div>
+  </div>
+</body>
+</html>

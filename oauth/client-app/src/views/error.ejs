@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - Notes Analytics</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #dc2626;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    .error-code {
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 14px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .description {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    a {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 12px 24px;
+      background: #f3f4f6;
+      color: #374151;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    a:hover {
+      background: #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">❌</div>
+    <h1>Something went wrong</h1>
+    <div class="error-code"><%= error %></div>
+    <p class="description"><%= error_description %></p>
+    <a href="/">← Back to Home</a>
+  </div>
+</body>
+</html>

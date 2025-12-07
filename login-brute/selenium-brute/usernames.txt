@@ -1,0 +1,17 @@
+# Sample usernames for password-spray mode
+# Add or remove as needed; lines starting with # are ignored.
+admin
+administrator
+user
+user1
+user2
+guest
+test
+demo
+alice
+bob
+charlie
+root
+support
+info
+contact

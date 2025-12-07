@@ -1,0 +1,14 @@
+[
+  {
+    "username": "user1",
+    "password_hash": "$argon2id$v=19$m=4096,t=3,p=1$UyCEuxyT7huzDm7wnySDdA$SZvix5A8elrTqgMGPcloKVUaghCm1KuY72OAm/Y315M"
+  },
+  {
+    "username": "support",
+    "password_hash": "$argon2id$v=19$m=4096,t=3,p=1$xo11q8xLvD0PMbS2irCgNQ$Y+KtpX1MJHpyngUbJmCXVEW2ZPFVtAyYoU5j4oaTNGY"
+  },
+  {
+    "username": "contact",
+    "password_hash": "$argon2id$v=19$m=4096,t=3,p=1$FIa/nS9hII83BRQNuJfTTw$YQ30lGhNSxiiJPrn7YRVEPqFlg7QXWq1SnJ2SxnRGM8"
+  }
+]

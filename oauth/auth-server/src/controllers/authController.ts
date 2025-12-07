@@ -299,7 +299,9 @@ export function authorizeGet(req: Request, res: Response): void {
     state,
     code_challenge,
     code_challenge_method,
-    error: null
+    error: null,
+    isDirectLogin: false,
+    redirect: null
   });
 }
 
@@ -340,7 +342,9 @@ export function authorizeLogin(req: Request, res: Response): void {
       state,
       code_challenge,
       code_challenge_method,
-      error: 'Invalid username or password'
+      error: 'Invalid username or password',
+      isDirectLogin: false,
+      redirect: null
     });
     return;
   }

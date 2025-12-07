@@ -145,7 +145,13 @@
       <% } else { %>
         <h2>Connect Your Notes</h2>
         <p>This app analyzes your notes to provide insights like word counts, writing patterns, and more. Connect your Notes account to get started.</p>
-        <a href="/connect" class="btn btn-primary">🔗 Connect Notes Account</a>
+        <button onclick="openOAuthPopup()" class="btn btn-primary" id="connectBtn">🔗 Connect Notes Account</button>
+        <div id="connectStatus" style="margin-top: 16px; display: none;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #666;">
+            <span class="spinner"></span>
+            <span>Waiting for authorization...</span>
+          </div>
+        </div>
         
         <div class="features">
           <div class="feature">
@@ -164,5 +170,87 @@
       <% } %>
     </div>
   </div>
+  
+  <style>
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #22c55e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+  
+  <script>
+    let authPopup = null;
+    let pollTimer = null;
+    
+    function openOAuthPopup() {
+      // Calculate popup position (centered)
+      const width = 500;
+      const height = 700;
+      const left = window.screenX + (window.innerWidth - width) / 2;
+      const top = window.screenY + (window.innerHeight - height) / 2;
+      
+      // Open popup
+      authPopup = window.open(
+        '/connect-popup',
+        'oauth_popup',
+        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+      );
+      
+      // Show waiting status
+      document.getElementById('connectBtn').disabled = true;
+      document.getElementById('connectBtn').textContent = '⏳ Authorizing...';
+      document.getElementById('connectStatus').style.display = 'block';
+      
+      // Listen for message from popup
+      window.addEventListener('message', handleOAuthMessage);
+      
+      // Poll to check if popup was closed
+      pollTimer = setInterval(() => {
+        if (authPopup && authPopup.closed) {
+          clearInterval(pollTimer);
+          window.removeEventListener('message', handleOAuthMessage);
+          resetConnectButton();
+        }
+      }, 500);
+    }
+    
+    function handleOAuthMessage(event) {
+      // Verify origin
+      if (event.origin !== window.location.origin) return;
+      
+      const data = event.data;
+      if (data.type === 'oauth_complete') {
+        clearInterval(pollTimer);
+        window.removeEventListener('message', handleOAuthMessage);
+        
+        if (data.success) {
+          // Redirect to dashboard
+          window.location.href = '/dashboard';
+        } else {
+          // Show error
+          alert('Authorization failed: ' + (data.error || 'Unknown error'));
+          resetConnectButton();
+        }
+        
+        // Close popup if still open
+        if (authPopup && !authPopup.closed) {
+          authPopup.close();
+        }
+      }
+    }
+    
+    function resetConnectButton() {
+      document.getElementById('connectBtn').disabled = false;
+      document.getElementById('connectBtn').textContent = '🔗 Connect Notes Account';
+      document.getElementById('connectStatus').style.display = 'none';
+    }
+  </script>
 </body>
 </html>

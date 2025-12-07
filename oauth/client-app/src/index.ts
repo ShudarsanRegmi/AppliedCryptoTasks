@@ -19,10 +19,11 @@ app.use(cookieParser());
 app.use(session({
   secret: config.sessionSecret,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, // Save session immediately so popup can access it
   cookie: {
     secure: false, // Set to true in production with HTTPS
     httpOnly: true,
+    sameSite: 'lax', // Allow cookies on top-level navigations (redirects)
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));

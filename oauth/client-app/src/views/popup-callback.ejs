@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authorization Complete</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    .icon.success { color: #22c55e; }
+    .icon.error { color: #ef4444; }
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    p {
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: white;
+    }
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    .closing-msg {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <% if (success) { %>
+      <div class="icon success">✅</div>
+      <h1>Authorization Successful!</h1>
+      <p>Your Notes account has been connected. This window will close automatically.</p>
+      <p class="closing-msg">Redirecting you back...</p>
+    <% } else { %>
+      <div class="icon error">❌</div>
+      <h1>Authorization Failed</h1>
+      <p><%= error_description || error || 'Something went wrong during authorization.' %></p>
+      <button onclick="window.close()" class="btn btn-secondary">Close Window</button>
+    <% } %>
+  </div>
+  
+  <script>
+    // Send message to opener window
+    const result = {
+      type: 'oauth_complete',
+      success: <%= success ? 'true' : 'false' %>,
+      <% if (!success) { %>
+      error: '<%= error || "unknown_error" %>',
+      error_description: '<%= error_description || "" %>'
+      <% } %>
+    };
+    
+    // Try to send message to opener
+    if (window.opener) {
+      window.opener.postMessage(result, window.location.origin);
+      
+      <% if (success) { %>
+      // Auto-close after a short delay on success
+      setTimeout(() => {
+        window.close();
+      }, 1500);
+      <% } %>
+    } else {
+      // No opener (user navigated directly), redirect to home
+      <% if (success) { %>
+      window.location.href = '/dashboard';
+      <% } else { %>
+      // Show the error, user can close manually
+      <% } %>
+    }
+  </script>
+</body>
+</html>
